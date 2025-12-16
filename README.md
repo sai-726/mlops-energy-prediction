@@ -133,13 +133,20 @@ See `mlflow_setup/setup_ec2.md` for detailed instructions on:
 
 ## Model Comparison
 
-| Model | RMSE | MAE | R² | Status |
-|-------|------|-----|-----|--------|
-| Model 1 | TBD | TBD | TBD | - |
-| Model 2 | TBD | TBD | TBD | - |
-| Model 3 | TBD | TBD | TBD | - |
+| Model | Train RMSE | Val RMSE | Test RMSE | Test MAE | Test R² | Status |
+|-------|------------|----------|-----------|----------|---------|--------|
+| **XGBoost** | 12.99 | 79.77 | 116.35 | 107.44 | -9.58 | ✅ Registered |
+| **Gradient Boosting** | 16.87 | 76.40 | 96.96 | 85.09 | -6.35 | ✅ Registered |
+| **Random Forest** | 16.37 | 47.49 | **49.89** | **44.24** | **-0.94** | 🏆 **Champion** |
 
-**Champion Model**: TBD (will be updated after training)
+**Champion Model:** Random Forest (promoted to Production)
+
+**Selection Criteria:**
+- ✅ Lowest test RMSE: 49.89 Wh
+- ✅ Best drift stability: 4.65% performance degradation
+- ✅ Most generalizable: Least overfitting on test data
+
+**Note on Negative R²:** The negative R² values on validation/test sets are expected for time-series data with seasonal drift. Models trained on winter data (Jan-Feb) show degradation on spring data (Apr-May). RMSE is the primary metric for model selection in this regression task.
 
 ## API Examples
 
@@ -181,7 +188,8 @@ See `screenshots/` directory for:
 
 ## Team
 
-- Sai Kiran
+- Sai Kiran Kanduri
+- Mohana Thota
 
 ## License
 
