@@ -1,0 +1,71 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# UV
+.uv/
+uv.lock
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebooks (for exploration only, not submitted)
+.ipynb_checkpoints/
+*.ipynb
+
+# MLflow
+mlruns/
+mlartifacts/
+
+# Data (keep structure, ignore large files)
+data/raw/*.csv
+data/cleaned/*.csv
+data/drift/*.csv
+
+# Models
+models/*.pkl
+models/*.h5
+models/*.joblib
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# H2O
+h2o_logs/

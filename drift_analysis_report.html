@@ -1,0 +1,281 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Drift Analysis Report</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; background-color: #f5f5f5; }
+            h1 { color: #333; }
+            h2 { color: #666; margin-top: 30px; }
+            table { border-collapse: collapse; width: 100%; margin: 20px 0; background-color: white; }
+            th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+            th { background-color: #4CAF50; color: white; }
+            tr:nth-child(even) { background-color: #f2f2f2; }
+            .alert { padding: 15px; margin: 20px 0; border-radius: 5px; }
+            .warning { background-color: #fff3cd; border-left: 5px solid #ffc107; }
+            .success { background-color: #d4edda; border-left: 5px solid #28a745; }
+            img { max-width: 100%; height: auto; margin: 20px 0; }
+        </style>
+    </head>
+    <body>
+        <h1>Model Drift Analysis Report</h1>
+        <p><strong>Generated:</strong> 2025-12-05 04:08:59</p>
+        
+        <div class="alert warning">
+            <strong>Summary:</strong> Detected drift in 13 out of 25 features (52.0%)
+        </div>
+        
+        <h2>1. Data Drift Analysis</h2>
+        <p>Comparison of feature distributions between reference (test) and production data.</p>
+        <table border="1" class="dataframe table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>feature</th>
+      <th>ref_mean</th>
+      <th>prod_mean</th>
+      <th>mean_change_%</th>
+      <th>drift_detected</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>lights</td>
+      <td>2.026730</td>
+      <td>1.741280</td>
+      <td>14.084276</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>T1</td>
+      <td>23.131420</td>
+      <td>23.852266</td>
+      <td>3.116307</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>RH_1</td>
+      <td>39.794183</td>
+      <td>41.082617</td>
+      <td>3.237744</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>T2</td>
+      <td>22.074294</td>
+      <td>23.149834</td>
+      <td>4.872360</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>RH_2</td>
+      <td>39.320620</td>
+      <td>39.954342</td>
+      <td>1.611679</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>T3</td>
+      <td>24.201314</td>
+      <td>24.958065</td>
+      <td>3.126902</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>RH_3</td>
+      <td>37.887854</td>
+      <td>38.851154</td>
+      <td>2.542504</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>T4</td>
+      <td>22.956876</td>
+      <td>23.737185</td>
+      <td>3.399018</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>RH_4</td>
+      <td>37.937488</td>
+      <td>39.398275</td>
+      <td>3.850511</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>T5</td>
+      <td>21.431816</td>
+      <td>22.157738</td>
+      <td>3.387125</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>RH_5</td>
+      <td>48.824642</td>
+      <td>49.548843</td>
+      <td>1.483271</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>T6</td>
+      <td>12.326941</td>
+      <td>14.786939</td>
+      <td>19.956272</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>RH_6</td>
+      <td>25.333813</td>
+      <td>22.101806</td>
+      <td>12.757680</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>T7</td>
+      <td>22.344326</td>
+      <td>23.177939</td>
+      <td>3.730758</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>RH_7</td>
+      <td>34.892833</td>
+      <td>36.908619</td>
+      <td>5.777078</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>T8</td>
+      <td>23.664700</td>
+      <td>24.305700</td>
+      <td>2.708673</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>RH_8</td>
+      <td>42.071514</td>
+      <td>43.389456</td>
+      <td>3.132623</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>T9</td>
+      <td>21.570669</td>
+      <td>22.396003</td>
+      <td>3.826190</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>RH_9</td>
+      <td>40.566433</td>
+      <td>42.168715</td>
+      <td>3.949773</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>T_out</td>
+      <td>11.288585</td>
+      <td>13.542086</td>
+      <td>19.962651</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <td>Press_mm_hg</td>
+      <td>756.580521</td>
+      <td>755.967488</td>
+      <td>0.081027</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>RH_out</td>
+      <td>73.447379</td>
+      <td>71.962350</td>
+      <td>2.021895</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>Windspeed</td>
+      <td>3.270312</td>
+      <td>3.032988</td>
+      <td>7.256909</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>Visibility</td>
+      <td>36.909186</td>
+      <td>36.905101</td>
+      <td>0.011067</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <td>Tdewpoint</td>
+      <td>6.097316</td>
+      <td>7.894216</td>
+      <td>29.470343</td>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table>
+        
+        <h2>2. Prediction Drift Analysis</h2>
+        <p>Model performance comparison on reference vs production data.</p>
+        <table border="1" class="dataframe table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>ref_rmse</th>
+      <th>prod_rmse</th>
+      <th>rmse_change_%</th>
+      <th>ref_mae</th>
+      <th>prod_mae</th>
+      <th>ref_r2</th>
+      <th>prod_r2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>xgboost</td>
+      <td>116.345450</td>
+      <td>123.744444</td>
+      <td>6.359505</td>
+      <td>107.440086</td>
+      <td>115.922478</td>
+      <td>-9.575260</td>
+      <td>-10.797602</td>
+    </tr>
+    <tr>
+      <td>gradient_boosting</td>
+      <td>96.963486</td>
+      <td>104.198381</td>
+      <td>7.461463</td>
+      <td>85.094532</td>
+      <td>94.536338</td>
+      <td>-6.345285</td>
+      <td>-7.364967</td>
+    </tr>
+    <tr>
+      <td>random_forest</td>
+      <td>49.893562</td>
+      <td>52.215049</td>
+      <td>4.652880</td>
+      <td>44.243931</td>
+      <td>46.956654</td>
+      <td>-0.944828</td>
+      <td>-1.100553</td>
+    </tr>
+  </tbody>
+</table>
+        
+        <h2>3. Visualizations</h2>
+        <img src="drift_analysis_plots.png" alt="Drift Analysis Plots">
+        
+        <h2>4. Recommendations</h2>
+        <ul>
+            <li>Features with >10% mean change should be investigated</li>
+            <li>Models with >20% RMSE degradation should be retrained</li>
+            <li>Consider implementing automated drift monitoring</li>
+            <li>Schedule regular model retraining based on drift patterns</li>
+        </ul>
+        
+    </body>
+    </html>
+    

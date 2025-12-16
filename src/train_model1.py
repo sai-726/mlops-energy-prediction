@@ -1,0 +1,192 @@
+"""
+Model 1: XGBoost Training with MLflow
+
+This script trains an XGBoost model and logs everything to MLflow.
+"""
+
+import pandas as pd
+import numpy as np
+from pathlib import Path
+import sys
+sys.path.append(str(Path(__file__).parent.parent))
+
+from mlflow_setup.mlflow_config import setup_mlflow
+import xgboost as xgb
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Paths
+TRAIN_PATH = Path("data/cleaned/train.csv")
+VAL_PATH = Path("data/cleaned/validate.csv")
+TEST_PATH = Path("data/cleaned/test.csv")
+
+def load_data():
+    """Load and prepare data"""
+    print("\n[1/6] Loading data...")
+    train_df = pd.read_csv(TRAIN_PATH)
+    val_df = pd.read_csv(VAL_PATH)
+    test_df = pd.read_csv(TEST_PATH)
+    
+    # Exclude columns
+    exclude_cols = ['date', 'rv1', 'rv2']
+    target = 'Appliances'
+    
+    # Prepare features and target
+    X_train = train_df.drop(columns=exclude_cols + [target])
+    y_train = train_df[target]
+    
+    X_val = val_df.drop(columns=exclude_cols + [target])
+    y_val = val_df[target]
+    
+    X_test = test_df.drop(columns=exclude_cols + [target])
+    y_test = test_df[target]
+    
+    print(f"Train: {X_train.shape}, Val: {X_val.shape}, Test: {X_test.shape}")
+    return X_train, y_train, X_val, y_val, X_test, y_test
+
+def train_model(X_train, y_train, X_val, y_val):
+    """Train XGBoost model"""
+    print("\n[2/6] Training XGBoost model...")
+    
+    params = {
+        'objective': 'reg:squarederror',
+        'max_depth': 6,
+        'learning_rate': 0.1,
+        'n_estimators': 200,
+        'subsample': 0.8,
+        'colsample_bytree': 0.8,
+        'random_state': 42
+    }
+    
+    model = xgb.XGBRegressor(**params)
+    model.fit(
+        X_train, y_train,
+        eval_set=[(X_val, y_val)],
+        verbose=False
+    )
+    
+    print(f"[OK] Model trained")
+    return model, params
+
+def evaluate_model(model, X_train, y_train, X_val, y_val, X_test, y_test):
+    """Evaluate model on all splits"""
+    print("\n[3/6] Evaluating model...")
+    
+    # Predictions
+    y_train_pred = model.predict(X_train)
+    y_val_pred = model.predict(X_val)
+    y_test_pred = model.predict(X_test)
+    
+    # Metrics
+    metrics = {
+        'train_rmse': np.sqrt(mean_squared_error(y_train, y_train_pred)),
+        'train_mae': mean_absolute_error(y_train, y_train_pred),
+        'train_r2': r2_score(y_train, y_train_pred),
+        'val_rmse': np.sqrt(mean_squared_error(y_val, y_val_pred)),
+        'val_mae': mean_absolute_error(y_val, y_val_pred),
+        'val_r2': r2_score(y_val, y_val_pred),
+        'test_rmse': np.sqrt(mean_squared_error(y_test, y_test_pred)),
+        'test_mae': mean_absolute_error(y_test, y_test_pred),
+        'test_r2': r2_score(y_test, y_test_pred)
+    }
+    
+    print("\nMetrics:")
+    print(f"  Train - RMSE: {metrics['train_rmse']:.4f}, MAE: {metrics['train_mae']:.4f}, R²: {metrics['train_r2']:.4f}")
+    print(f"  Val   - RMSE: {metrics['val_rmse']:.4f}, MAE: {metrics['val_mae']:.4f}, R²: {metrics['val_r2']:.4f}")
+    print(f"  Test  - RMSE: {metrics['test_rmse']:.4f}, MAE: {metrics['test_mae']:.4f}, R²: {metrics['test_r2']:.4f}")
+    
+    return metrics, y_test_pred
+
+def create_plots(model, X_train, y_test, y_test_pred):
+    """Create visualization plots"""
+    print("\n[4/6] Creating plots...")
+    
+    # Feature importance
+    fig, axes = plt.subplots(1, 2, figsize=(15, 5))
+    
+    # Plot 1: Feature Importance
+    importance_df = pd.DataFrame({
+        'feature': X_train.columns,
+        'importance': model.feature_importances_
+    }).sort_values('importance', ascending=False).head(15)
+    
+    sns.barplot(data=importance_df, y='feature', x='importance', ax=axes[0])
+    axes[0].set_title('Top 15 Feature Importances')
+    axes[0].set_xlabel('Importance')
+    
+    # Plot 2: Predictions vs Actual
+    axes[1].scatter(y_test, y_test_pred, alpha=0.5)
+    axes[1].plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2)
+    axes[1].set_xlabel('Actual')
+    axes[1].set_ylabel('Predicted')
+    axes[1].set_title('Predictions vs Actual (Test Set)')
+    
+    plt.tight_layout()
+    plot_path = "xgboost_plots.png"
+    plt.savefig(plot_path)
+    plt.close()
+    
+    print(f"[OK] Plots saved to {plot_path}")
+    return plot_path
+
+def main():
+    print("=" * 70)
+    print("MODEL 1: XGBOOST TRAINING")
+    print("=" * 70)
+    
+    # Setup MLflow
+    mlflow = setup_mlflow()
+    
+    # Load data
+    X_train, y_train, X_val, y_val, X_test, y_test = load_data()
+    
+    # Start MLflow run
+    with mlflow.start_run(run_name="xgboost_model"):
+        # Train model
+        model, params = train_model(X_train, y_train, X_val, y_val)
+        
+        # Evaluate
+        metrics, y_test_pred = evaluate_model(model, X_train, y_train, X_val, y_val, X_test, y_test)
+        
+        # Create plots
+        plot_path = create_plots(model, X_train, y_test, y_test_pred)
+        
+        # Log to MLflow
+        print("\n[5/6] Logging to MLflow...")
+        
+        # Log parameters
+        mlflow.log_params(params)
+        
+        # Log metrics
+        mlflow.log_metrics(metrics)
+        
+        # Log model
+        mlflow.xgboost.log_model(model, "model")
+        
+        # Log artifacts
+        mlflow.log_artifact(plot_path)
+        
+        # Save predictions
+        pred_df = pd.DataFrame({
+            'actual': y_test,
+            'predicted': y_test_pred
+        })
+        pred_path = "xgboost_predictions.csv"
+        pred_df.to_csv(pred_path, index=False)
+        mlflow.log_artifact(pred_path)
+        
+        print("[OK] Logged to MLflow")
+        
+        # Register model
+        print("\n[6/6] Registering model...")
+        model_uri = f"runs:/{mlflow.active_run().info.run_id}/model"
+        mlflow.register_model(model_uri, "XGBoost_Energy_Model")
+        print("[OK] Model registered")
+    
+    print("\n" + "=" * 70)
+    print("[OK] XGBOOST TRAINING COMPLETED")
+    print("=" * 70)
+
+if __name__ == "__main__":
+    main()
